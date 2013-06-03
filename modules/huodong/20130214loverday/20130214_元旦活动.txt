@@ -1,0 +1,64 @@
+
+DROP TABLE IF EXISTS log_yuandan_duihuan_info;
+CREATE TABLE log_yuandan_duihuan_info (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '索引id',
+  `user_id` INT(11) NOT NULL COMMENT '用户id',
+ 	`duihuan_type` INT(11) NOT NULL DEFAULT '0' COMMENT '兑换优惠券1-8',
+  `sys_time` DATETIME NOT NULL COMMENT '时间',
+  PRIMARY KEY  (`id`)
+) ENGINE=MYISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS user_yuandan_info;
+CREATE TABLE `user_yuandan_info` (
+  `user_id` INT(11) NOT NULL COMMENT '用户id',
+  `now_step1` INT(11) NOT NULL DEFAULT '1'  COMMENT '圆圆在第几步任务',
+  `now_step2` INT(11) NOT NULL DEFAULT '1'  COMMENT '蛋蛋第几步任务',
+  `now_step3` INT(11) NOT NULL DEFAULT '1'  COMMENT '乐乐第几步任务',
+  `now_state1` INT(11) NOT NULL DEFAULT '1'  COMMENT '圆圆的状态',
+  `now_state2` INT(11) NOT NULL DEFAULT '1'  COMMENT '蛋蛋的状态',
+  `now_state3` INT(11) NOT NULL DEFAULT '1'  COMMENT '乐乐的状态',
+  `sys_time` DATETIME DEFAULT NULL COMMENT '时间（冗余字段）',
+  PRIMARY KEY  (`user_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS log_yuandan_play_card;
+CREATE TABLE log_yuandan_play_card (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '索引id',
+  `user_id` INT(11) NOT NULL COMMENT '用户id',
+  `type_game` INT(11) NOT NULL DEFAULT '1'  COMMENT '3个区域',
+  `now_step` INT(11) NOT NULL DEFAULT '1'  COMMENT '第几步任务',
+  `type_id` INT(11) NOT NULL DEFAULT '0' COMMENT '奖品类型,1是祝福语，2是翻倍，3是汽车',
+  `sys_time` DATETIME NOT NULL COMMENT '时间',
+  PRIMARY KEY  (`id`)
+) ENGINE=MYISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS log_yuandan_reward;
+CREATE TABLE log_yuandan_reward (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '索引id',
+  `user_id` INT(11) NOT NULL COMMENT '用户id',
+  `type_game` INT(11) NOT NULL DEFAULT '1'  COMMENT '3个区域',
+  `now_step` INT(11) NOT NULL DEFAULT '1'  COMMENT '第几步任务',
+  `car_id` INT(11) NOT NULL DEFAULT '0' COMMENT '汽车id',
+  `cash_num` INT(11) NOT NULL DEFAULT '0' COMMENT '达人币数量',
+  `sys_time` DATETIME NOT NULL COMMENT '时间',
+  PRIMARY KEY  (`id`)
+) ENGINE=MYISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS log_start_playcard;
+CREATE TABLE log_start_playcard (
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '索引id',
+  `user_id` INT(11) NOT NULL COMMENT '用户id',
+  `type_game` INT(11) NOT NULL DEFAULT '1'  COMMENT '3个区域',
+  `type_id` INT(11) NOT NULL DEFAULT '0' COMMENT '1是达人币，2是金币',
+  `sys_time` DATETIME NOT NULL COMMENT '时间',
+  PRIMARY KEY  (`id`)
+) ENGINE=MYISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO configure_items(id,price,NAME,buffs_id) VALUE(23,180000,'红玫瑰',0);
+INSERT INTO configure_items(id,price,NAME,buffs_id) VALUE(24,180000,'粉玫瑰',0);
+INSERT INTO configure_items(id,price,NAME,buffs_id) VALUE(25,180000,'紫水晶',0);
+INSERT INTO configure_items(id,price,NAME,buffs_id) VALUE(26,180000,'蓝冰钻',0);
+

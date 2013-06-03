@@ -1,0 +1,15 @@
+[Global]
+CurrentProject=..\..\hall.vpj
+[ProjectDates]
+..\..\hall.vpj=20110627081443281
+tex.vpj=20110804090922796
+[TreeExpansion2]
++ ..\..\hall.vpj
+- tex.vpj
+  + logic
+scroll:0
+[State]
+SCREEN: 1280 1024 22 29 960 697 0 0 N 0 0 0 0 705 278 0
+CWD: ..\..\..\gamesvr
+PROJECT_CACHE: 0
+TBCLASS: 0 0

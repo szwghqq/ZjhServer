@@ -1,0 +1,77 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+	Version="10.0"
+	VendorName="SlickEdit"
+	WorkingDir=".">
+	<Config
+		Name="Release"
+		OutputFile=""
+		CompilerConfigName="Latest Version">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rp">
+				<Exec CmdLine="maketex.bat"/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw"
+				DependsRef="Release">
+				<Exec CmdLine="maketex.bat"/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw"
+				DependsRef="Release">
+				<Exec CmdLine="maketex.bat"/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				SaveOption="SaveNone"
+				RunFromDir="%rw">
+				<Exec/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				SaveOption="SaveNone"
+				RunFromDir="%rw">
+				<Exec CmdLine='"lua.exe"'/>
+			</Target>
+		</Menu>
+	</Config>
+	<Files>
+		<Folder
+			Name="logic"
+			Filters="">
+			<F N="huodong.lua"/>
+			<F N="logic/rule.lua"/>
+			<F N="tex.buff.lua"/>
+			<F N="tex.channelyw.lua"/>
+			<F N="tex.dhome.lua"/>
+			<F N="tex.filter.lua"/>
+			<F N="tex.gameprops.lua"/>
+			<F N="tex.match.lua"/>
+			<F N="tex.quest.lua"/>
+			<F N="tex.speaker.lua"/>
+			<F N="tex.suanpaiqi.lua"/>
+			<F N="tex.userdiy.lua"/>
+		</Folder>
+		<F N="tex.gift.lua"/>
+		<F N="tex.net.lua"/>
+		<F N="tex.safebox.lua"/>
+		<F N="tex.achievement.lua"/>
+		<F N="tex.declare.lua"/>
+		<F N="tex.main.lua"/>
+	</Files>
+</Project>

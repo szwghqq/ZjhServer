@@ -1,0 +1,13 @@
+
+
+DROP TABLE IF EXISTS log_gaobei_diaoluo_info;
+CREATE TABLE log_gaobei_diaoluo_info(
+  `id` int(11) NOT NULL auto_increment COMMENT 'ID',
+  `user_id` int(10) unsigned NOT NULL COMMENT 'user_id',
+  `type_id` int(11) default NULL COMMENT 'type_id',
+  `item_gift_id` int(11) default NULL COMMENT 'item_gift_id',
+  `item_number` int(11) default NULL COMMENT 'item_number',
+  `sys_time` datetime NOT NULL default '1900-01-01 00:00:00' COMMENT 'ÈÕÆÚ',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+DELIMITER ;

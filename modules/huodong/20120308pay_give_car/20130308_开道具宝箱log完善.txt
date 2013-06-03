@@ -1,0 +1,36 @@
+
+DROP TABLE IF EXISTS log_gift_box20130308;
+RENAME table log_gift_box TO log_gift_box20130308;
+CREATE TABLE log_gift_box(
+  `id` int(11) NOT NULL auto_increment COMMENT 'ID',
+  `user_id` int(10) unsigned NOT NULL COMMENT 'user_id',
+  `item_id` int(11) default NULL COMMENT 'item_id',
+  `type_id` int(11) default NULL COMMENT 'type_id',
+  `item_number` int(11) default NULL COMMENT 'item_number',
+  `box_id` int(11) default NULL COMMENT 'box_id',
+  `sys_time` datetime NOT NULL default '1900-01-01 00:00:00' COMMENT 'ÈÕÆÚ',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+DELIMITER ;
+
+DROP TABLE IF EXISTS already_get_carnum_inkey;
+CREATE TABLE already_get_carnum_inkey(
+  `car_getnum1` int(10) default 0 NULL COMMENT 'num1',
+  `car_getnum2` int(10) default 0 NULL COMMENT 'num2',
+  `car_getnum3` int(10) default 0 NULL COMMENT 'num3',
+  `car_getnum4` int(10) default 0 NULL COMMENT 'num4',
+  `car_getnum5` int(10) default 0 NULL COMMENT 'num5',
+  `car_getnum6` int(10) default 0 NULL COMMENT 'num6',
+  `car_getnum7` int(10) default 0 NULL COMMENT 'num7',
+  `car_getnum8` int(10) default 0 NULL COMMENT 'num8',
+  `car_getnum9` int(10) default 0 NULL COMMENT 'num9',
+  `car_getnum10` int(10) default 0 NULL COMMENT 'num10',
+  `car_getnum11` int(10) default 0 NULL COMMENT 'num11',
+  `car_getnum12` int(10) default 0 NULL COMMENT 'num12',
+  `car_getnum13` int(10) default 0 NULL COMMENT 'num13',
+  `car_getnum14` int(10) default 0 NULL COMMENT 'num14',
+  `car_getnum15` int(10) default 0 NULL COMMENT 'num15'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+DELIMITER ;
+INSERT INTO already_get_carnum_inkey  VALUES ()
+

@@ -1,0 +1,76 @@
+DROP TABLE IF EXISTS user_new_year_info;
+CREATE TABLE user_new_year_info (
+	`user_id` INT(11) NOT NULL COMMENT '用户id',	
+	`wishes` INT(11) NOT NULL DEFAULT 0 COMMENT '心愿值',
+	`buff` INT(11) NOT NULL DEFAULT 0 COMMENT 'buff剩余时间',
+	`flower1` INT(11) DEFAULT 0 COMMENT '5种花的个数',
+	`flower2` INT(11) DEFAULT 0 COMMENT '5种花的个数',
+	`flower3` INT(11) DEFAULT 0 COMMENT '5种花的个数',
+	`flower4` INT(11) DEFAULT 0 COMMENT '5种花的个数',
+	`flower5` INT(11) DEFAULT 0 COMMENT '5种花的个数',
+	`already_reward` INT(11) DEFAULT 0 COMMENT '是否领奖',
+	`last_login_time` INT(11) NOT NULL DEFAULT 0 COMMENT '上次登录时间',
+	`nick_name`  VARCHAR(50) NOT NULL DEFAULT "" COMMENT '姓名',
+	`sys_time` DATETIME DEFAULT NULL COMMENT '时间（冗余字段）',
+  PRIMARY KEY  (`user_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS user_new_year_history_info;
+CREATE TABLE user_new_year_history_info (
+	`user_id` INT(11) NOT NULL COMMENT '用户id',	
+	`gift_name1`  VARCHAR(50) NOT NULL DEFAULT "" COMMENT '奖品1名称',
+	`gift_name2`  VARCHAR(50) NOT NULL DEFAULT "" COMMENT '奖品2名称',
+	`gift_name3`  VARCHAR(50) NOT NULL DEFAULT "" COMMENT '奖品3名称',
+	`gift_name4`  VARCHAR(50) NOT NULL DEFAULT "" COMMENT '奖品4名称',
+	`gift_name5`  VARCHAR(50) NOT NULL DEFAULT "" COMMENT '奖品5名称',
+  PRIMARY KEY  (`user_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS user_new_year_history_final;
+CREATE TABLE user_new_year_history_final (
+	`user_id` INT(11) NOT NULL COMMENT '用户id',	
+	`nick_name`  VARCHAR(50) NOT NULL COMMENT '玩家名称',
+	`flowers` INT(11) DEFAULT 0 COMMENT '花的个数',
+	`wishes` INT(11) DEFAULT 0 COMMENT '心愿值',
+	`sys_time` DATETIME DEFAULT NULL COMMENT '时间（冗余字段）',
+  PRIMARY KEY  (`user_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS log_new_year_flower_info;
+CREATE TABLE log_new_year_flower_info(
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `user_id` INT(10) UNSIGNED NOT NULL COMMENT 'user_id',
+  `flower_id` INT(11) DEFAULT NULL COMMENT '花的种类',
+  `add_flower` INT(11) DEFAULT NULL COMMENT '花的增减',
+  `sys_time` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' COMMENT '日期',
+  PRIMARY KEY  (`id`)
+) ENGINE=MYISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS log_new_year_box_info;
+CREATE TABLE log_new_year_box_info(
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `user_id` INT(10) UNSIGNED NOT NULL COMMENT 'user_id',
+  `box_id` INT(11) NOT NULL DEFAULT 0 COMMENT '开箱子的种类',
+  `item_id` INT(11) DEFAULT NULL COMMENT '物品id，礼物，汽车',
+  `item_number` INT(11) DEFAULT NULL COMMENT '数量',
+  `sys_time` DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00' COMMENT '日期',
+  PRIMARY KEY  (`id`)
+) ENGINE=MYISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+DELIMITER ;
+
+
+#得奖联系人信息
+DROP TABLE IF EXISTS newyear_contact_info;
+CREATE TABLE newyear_contact_info(
+	id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	user_id INT(11) UNSIGNED NOT NULL, 
+	rank_number INT(11) UNSIGNED NOT NULL,
+	realname VARCHAR(255) NOT NULL,
+	yy VARCHAR(100) NOT NULL, 
+	address BLOB NOT NULL,
+	tel varchar(100) NOT NULL,
+	PRIMARY KEY(id)
+)ENGINE = MYISAM DEFAULT CHARSET = utf8;

@@ -1,0 +1,14 @@
+DROP TABLE IF EXISTS user_wing_info;
+CREATE TABLE user_wing_info (
+	`user_id` INT(11) NOT NULL COMMENT '用户id',	
+	`exp_now` INT(11) NOT NULL DEFAULT 0 COMMENT '当前成长值',
+	`exp_play` INT(11) NOT NULL DEFAULT 0 COMMENT '今日打牌已经获得成长值',
+	`exp_item` INT(11) NOT NULL DEFAULT 0 COMMENT '今日使用道具已经获得成长值',
+	`dress_on` INT(11) NOT NULL DEFAULT 0 COMMENT '当前翅膀是否佩戴',
+	`level` INT(11) DEFAULT 0 COMMENT '当前翅膀等级',
+	`nick_name`  VARCHAR(50) NOT NULL DEFAULT "" COMMENT '姓名',
+	`face`  BLOB NOT NULL DEFAULT "" COMMENT '头像',
+	`last_login_time` DATETIME DEFAULT NULL COMMENT '上次退出时间）',
+	`sys_time` DATETIME DEFAULT NULL COMMENT '上次升级的时间',
+  PRIMARY KEY  (`user_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;

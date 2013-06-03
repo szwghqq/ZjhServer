@@ -1,0 +1,102 @@
+DELIMITER $$ 
+
+USE `yegoal_tex_new`$$ 
+
+DROP PROCEDURE IF EXISTS `sp_do_after_pay`$$ 
+
+CREATE  PROCEDURE `sp_do_after_pay`(
+IN nUserId INT,
+IN realrmb DOUBLE,
+IN nGold INT,
+IN nPayFrom INT,
+IN nPayType INT,
+IN nRegSiteNo INT
+)
+BEGIN
+DECLARE nowTime DATETIME;
+DECLARE endTime DATETIME;
+DECLARE startTime2 DATETIME;
+DECLARE startTime4 DATETIME;
+DECLARE endTime2 DATETIME;
+DECLARE endTime4 DATETIME;
+DECLARE nGiveCount INT;
+DECLARE endTime3 DATETIME;
+DECLARE fGiveCountPrermb FLOAT; #每块钱给多少
+DECLARE shovelNum INT;
+DECLARE addShovelNum INT;
+SET shovelNum = 0;
+SET addShovelNum = 0;
+SET nowTime = NOW();
+SET endTime = '2012-07-05 23:59:59';#竞技场活动的结束时间
+SET startTime2 = '2013-04-19 09:00:00';
+SET startTime4 = '2012-10-01 9:00:00';#国庆冲值
+SET endTime2 = '2013-05-05 23:59:59';#充值送宝箱
+SET endTime3 = '2012-07-31 23:59:59';#充值送车
+SET endTime4 = '2013-1-5 23:59:59';
+SET fGiveCountPrermb=0.1; #默认1块钱给0。1张
+#十一充值送金币
+IF (nowTime > startTime4 AND nowTime <= endTime4) THEN
+IF (realrmb >= 10 AND realrmb<20) THEN
+CALL sp_add_gold(nUserId, 55000, 1000);
+ELSEIF(realrmb>=20 AND realrmb<50) THEN
+CALL sp_add_gold(nUserId, 110000, 1000);
+ELSEIF(realrmb>=50 AND realrmb<100) THEN
+CALL sp_add_gold(nUserId, 250000, 1000);
+ELSEIF(realrmb>=100) THEN
+CALL sp_add_gold(nUserId, 500000, 1000);
+#ELSEIF(realrmb>=100 AND realrmb<500) THEN
+#CALL sp_add_gold(nUserId, 500000, 1000);
+#ELSEIF(realrmb>=500 AND realrmb<1000) THEN
+#CALL sp_add_gold(nUserId, 1500000, 1000);
+#ELSEIF(realrmb >= 1000) THEN
+# CALL sp_add_gold(nUserId, 1650000, 1000);
+END IF;
+END IF;
+#四月充值送宝箱
+IF (nowTime > startTime2 AND nowTime < endTime2) THEN
+IF (realrmb>=20 AND realrmb<100) THEN
+INSERT INTO user_props_info (user_id,total_count,props_type) VALUES(nUserId,1,200019) ON DUPLICATE KEY UPDATE total_count=total_count+1;
+ELSEIF(realrmb>=100 AND realrmb<1000) THEN
+INSERT INTO user_props_info (user_id,total_count,props_type) VALUES(nUserId,1,200020) ON DUPLICATE KEY UPDATE total_count=total_count+1;
+ELSEIF(realrmb>=1000) THEN
+INSERT INTO user_props_info (user_id,total_count,props_type) VALUES(nUserId,1,200021) ON DUPLICATE KEY UPDATE total_count=total_count+1;
+END IF;
+END IF;
+IF (realrmb>=20 AND realrmb<30) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 1, 2, NOW());
+ELSEIF (realrmb>=30 AND realrmb<50) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 1, 1, NOW());
+ELSEIF(realrmb>=50 AND realrmb<100) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 1, 2, NOW()), (nUserId, 2, 1, NOW());
+ELSEIF(realrmb>=100 AND realrmb<300) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 1, 2, NOW()), (nUserId, 2, 2, NOW());
+ELSEIF(realrmb>=300 AND realrmb<500) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 2, 3, NOW());
+ELSEIF(realrmb>=500 AND realrmb<1000) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 1, 2, NOW()), (nUserId, 2, 2, NOW()), (nUserId, 3, 1, NOW());
+ELSEIF(realrmb>=1000 AND realrmb<2000) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 1, 2, NOW()), (nUserId, 2, 2, NOW()), (nUserId, 3, 1, NOW());
+ELSEIF (realrmb>=2000 AND realrmb<3000) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 1, 2, NOW()), (nUserId, 2, 2, NOW()), (nUserId, 3, 1, NOW());
+ELSEIF (realrmb>=3000 AND realrmb<10000) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 3, 3, NOW());
+ELSEIF (realrmb>=10000) THEN
+INSERT INTO user_giveparking_info(user_id, parking_type, parking_count, sys_time) VALUES(nUserId, 1, 2, NOW()), (nUserId, 2, 2, NOW()), (nUserId, 3, 1, NOW()), (nUserId, 4, 1, NOW());
+END IF;
+#充值送铲子
+IF (nowTime < endTime3) THEN
+IF (realrmb>=10 AND realrmb<=50) THEN
+SET shovelNum = 2;
+ELSEIF(realrmb=100) THEN
+SET shovelNum = 5;
+ELSEIF(realrmb>=500 AND realrmb<1000) THEN
+SET shovelNum = 30;
+ELSEIF(realrmb>=1000) THEN
+SET shovelNum = 70;
+END IF;
+INSERT INTO user_wabao_info(user_id, shovel_num) VALUE(nUserId, shovelNum) ON DUPLICATE KEY UPDATE shovel_num = shovel_num + shovelNum;COMMIT;
+END IF; 
+COMMIT;
+END$$ 
+
+DELIMITER ;
