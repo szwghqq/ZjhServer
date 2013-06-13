@@ -1,24 +1,24 @@
 dofile("games/hall.desk.lua")
 
 --dofile("games/modules/treasure_box.lua")
-dofile("games/modules/quest.lua")
-dofile("games/modules/vip.lua")
-dofile("games/modules/friend.lua")
+--dofile("games/modules/quest.lua")
+--dofile("games/modules/vip.lua")
+--dofile("games/modules/friend.lua")
 --dofile("games/modules/riddle_forgs.lua")
-dofile("games/modules/onlineprize.lua")
+--dofile("games/modules/onlineprize.lua")
 --dofile("games/modules/za_dan.lua")
 
-dofile("games/tex/tex.buff.lua")
-dofile("games/tex/huodong.lua")
+--dofile("games/tex/tex.buff.lua")
+--dofile("games/tex/huodong.lua")
 
-dofile("games/tex/tex.quest.lua")
+--dofile("games/tex/tex.quest.lua")
 dofile("games/modules/channel.lua");
 dofile("common/ipinfo/iplib.lua")
-dofile("games/tex/tex.filter.lua")
+--dofile("games/tex/tex.filter.lua")
 
 dofile("games/tex/tex.language_package.lua")
 dofile("games/file_load.lua")
-dofile("games/gm.lua")
+--dofile("games/gm.lua")
 -----------------------------------------------------------------------------
 
 format = string.format
@@ -429,21 +429,13 @@ end
 --得到输赢数数组
 usermgr.get_user_history_array = function(useinfo)
     if(useinfo == nil) then return nil end
-
-    local user_history = usermgr.get_user_history(useinfo)
-    local history = {}
-    for k,v in pairs(user_history) do
-        local history_data = {}
-        history_data.date = k
-        history_data.win  = v.win
-        history_data.lose = v.lose
+ 
+	 local history = {}
+	    local history_data = {}
+        history_data.date =  "NULL"
+        history_data.win  = 0
+        history_data.lose = 0
         table.insert(history,history_data)
-    end
-    --按日期降序排列
-    table.sort(history,function(a,b)
-        return cal_day_number(a.date) > cal_day_number(b.date)
-    end)
-
     return history
 end
 ------------------------------------------------------------------------
@@ -1814,7 +1806,7 @@ end
 --is_win为空时今日输赢数不改变
 usermgr.update_win_lose = function(userid, recent_date, wingold)
     ASSERT(userid and userid > 0)
-
+	if true then return end 
     local userinfo = usermgr.GetUserById(userid)
     local user_history = usermgr.get_user_history(userinfo)
 
@@ -2596,7 +2588,7 @@ function doDelUser(userKey)
 
         --好友离线通知
         --TraceError("通知好友离线change_userstate_tofriend")
-        friendlib.change_userstate_tofriend(userinfo,0)
+        --friendlib.change_userstate_tofriend(userinfo,0)
 
         if (userinfo.sockeClosed == true) then
             usermgr.DelUser(userKey)
@@ -2626,7 +2618,7 @@ function onclientoffline(buf)
     
 	--好友离线通知
 	--TraceError("通知好友离线onclientoffline")
-    friendlib.change_userstate_tofriend(userinfo,0)
+    --friendlib.change_userstate_tofriend(userinfo,0)
     
     userinfo.sockeClosed = true
     DoKickUserOnNotGame(userkey, true)    
@@ -3136,10 +3128,7 @@ function process_back_to_hall(userinfo)
             gamepkg.forceGameOverUser(userinfo)
         end
         ResetUser(userinfo.key, true)
-    	if(friendlib)then --通知好友回到大厅状态     
-    	   	--TraceError("通知好友回到大厅状态")
-  	  		xpcall(function() friendlib.change_userstate_tofriend(userinfo,2) end, throw)
-		end
+
 		if(tex_userdiylib)then
 			tex_userdiylib.on_recv_update_userlist(userinfo,n_desk)
    		end
@@ -3342,6 +3331,7 @@ function OnNotifyLogin(buf)
         outBuf:writeString("GMSK") -- gm强行踢人
         outBuf:writeInt(1) --表示被GM踢掉。
     end
+    
     if (string.len(szUserInfo) == 0 )then  --说明用户没有登录过gamcenter
         nRet = -1
     else
@@ -3482,18 +3472,14 @@ function OnNotifyLogin(buf)
                     local gameeventdata1 = {userinfo = userinfo, data = dt[1] or {}, alldata = dt}
     				eventmgr:dispatchEvent(Event("h2_on_user_login_forachieve", gameeventdata1));
                     --添加用户公共信息,如声望，等级，经验
-                    add_user_common_info(userinfo, dt[1], dt)
+                    --add_user_common_info(userinfo, dt[1], dt)
 
                     --写入游戏信息副本到db
                     update_gameinfo_copy(userinfo)
 
                     --得到用户的BUFF
                     bufflib.get_user_buff(userinfo.userId)                   
-                    --得到玩家的最新SNS好友信息
-                    xpcall(function() if friendlib then friendlib.load_user_friend_info_from_sns(userinfo) end end,throw)
-
-					--friendlib.send_user_allfriend_info(userinfo,0)
-					
+                
                     --更新游戏的个数信息
     				if(gamepkg and gamepkg.OnBeforeUserLogin) then
     					gamepkg.OnBeforeUserLogin(userinfo, dt[1], dt)
@@ -3953,6 +3939,7 @@ function onrecv_gc_reply_info(buf)
 end
 
 function onrecvlogin(buf)
+	--TraceError("onrecvlogin!!")
     local user_id = buf:readInt()
     local password = buf:readString()
     local reg_site_no = buf:readByte()
@@ -4143,7 +4130,7 @@ hall.on_start_server = function()
 	tools.SendBufToGameCenter(getRoomType(), "GCRG");
 	checkGamePkg()	-- 检查游戏实现的接口是否完善
 	-- 最后游戏初始化启动自己
-	gamepkg.on_start_server();	
+	--gamepkg.on_start_server();	
 	eventmgr:dispatchEvent(Event("on_server_start", null));
 end
 
@@ -5870,9 +5857,6 @@ function DoUserExitWatch(userinfo)
         userinfo.refuselist = nil
     end
 
-    --牌桌到大厅
-    --TraceError("牌桌到大厅DoUserExitWatch")
-    friendlib.change_userstate_tofriend(userinfo,2)
 
     local deskno = userinfo.desk
     if(deskno == nil) then
@@ -5956,7 +5940,6 @@ function DoUserWatch(deskno, userinfo,retcode)
     --从大厅到牌桌
     local DoUserWatch2 = function()
         --TraceError("从大厅到牌桌")
-        friendlib.change_userstate_tofriend(userinfo,3)
     end
     getprocesstime(DoUserWatch2, "DoUserWatch2", 500)
 

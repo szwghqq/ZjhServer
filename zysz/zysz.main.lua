@@ -1,5 +1,7 @@
 dofile("common/common.lua")
-
+if zysz and zysz.on_desk_init then
+	eventmgr:removeEventListener("on_desk_init", zysz.on_desk_init);
+end
 --处理所有从队列->逻辑处理， 以及 逻辑处理->队列 间的程序
 
 --zysz.pokechar 应该在 preinit 中
@@ -352,10 +354,6 @@ function continuegame(deskno,doType)--doType--1为下注触发自动开牌，2为放弃触发自
 		--结算金额，保存到数据库
 		calMoney(deskno,desklist[deskno].winner,1)
 		restartthegame(deskno)
-		--春节活动盘数统计
-		--if springboxlib then
-		--	xpcall(function() springboxlib.count_huodong_panshu() end,throw)
-		--end
     else--检查是否要自动开牌--下个人轮到开封的人了
         --找到下个人
         desklist[deskno].nextpeople = deskmgr.getnextsite(deskno,desklist[deskno].nextpeople)   
@@ -364,9 +362,6 @@ function continuegame(deskno,doType)--doType--1为下注触发自动开牌，2为放弃触发自
         if doType and desklist[deskno].isfengding == 1 then
             if setbetmoney(deskno,desklist[deskno].nextpeople,0) == 0 or desklist[deskno].nextpeople == desklist[deskno].kaifengsiteno then
                 doAutoKaiPai(deskno,doType)
-				--if springboxlib then
-				--	xpcall(function() springboxlib.count_huodong_panshu() end,throw)
-				--end
                 return
             end
         end
@@ -2660,6 +2655,10 @@ zysz.on_start_server = function()
     getCaichiInfo();
 end
 
+zysz.on_desk_init = function(e)
+	TraceError("ffffffffffffffffffffffffffffffffffffffffffffff")
+	zysz.on_start_server()
+end
 --座位状态机
 zysz.init_state = function()
     hall.desk.register_site_states(newStrongTable(
@@ -2697,4 +2696,4 @@ end
 
 zysz.init_state();
 zysz.init_map();
-
+eventmgr:addEventListener("on_desk_init", zysz.on_desk_init);

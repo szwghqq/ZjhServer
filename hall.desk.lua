@@ -607,9 +607,9 @@ hall.desk.init_desk_info = function(index, deskcfg)
             deskinfo.at_least_gold = (deskinfo.largebet + deskinfo.specal_choushui)
         end
         
-        if viproom_lib then
-        	viproom_lib.init_vip_desk(deskinfo)
-        end
+		TraceError("fffffffffffffffffffffffffffffffffffffsssssssssssssssssssssssssssssssss")
+        eventmgr:dispatchEvent(Event("on_desk_init", null));
+       
     end
 
     --设置一个静态大小盲实现动态大小盲功能
