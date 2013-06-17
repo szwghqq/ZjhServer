@@ -2386,7 +2386,7 @@ function onsenddesklist(userinfo, sendlist)
           out_buf:writeByte(gamepkg.getGameStart(deskno) and 1 or 0)
           
           --是不是VIP房
-          out_buf:writeByte(viproom_lib.get_room_spec_type(deskno))
+          out_buf:writeByte(0)
         end
       end
     , userinfo.ip, userinfo.port)
