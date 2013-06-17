@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.dozengame"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <application android:icon="@drawable/logo2" android:label="@string/app_name"
+     android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        <activity android:name=".DzpkGameStartActivity"
+                  android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+      <activity android:name=".DzpkGameLoginActivity"
+                  android:screenOrientation="portrait">
+       </activity>
+      <activity android:name=".DzpkGameRoomActivity"
+                  android:screenOrientation="portrait">
+       </activity>
+        <activity android:name=".DzpkGameMenuActivity"
+                  android:screenOrientation="portrait"
+>
+       </activity>
+        <activity android:name=".DzpkGameActivity"
+                  android:screenOrientation="portrait">
+       </activity>
+       <activity 
+	       android:name=".playerlocationroom.DzpkPlayerLocationRoomActivity" 
+	       android:screenOrientation="portrait"></activity>
+    </application>
+    <uses-sdk android:minSdkVersion="8" />
+ <uses-permission android:name="android.permission.INTERNET"/>
+ <!-- 防止手机休眠的权限 -->
+ <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <uses-permission android:name="android.permission.DISABLE_KEYGUARD"></uses-permission>
+  <!-- android系统振动 -->
+   <uses-permission android:name="android.permission.VIBRATE" />
+   
+     <!--GPS设置-->
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+ 
+</manifest> 
