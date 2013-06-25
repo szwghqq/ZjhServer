@@ -483,7 +483,7 @@ tasklib.net_send_task_cfg = function(user_info)
                 elseif(prize_type == 2) then
                     name = string.format(name, prize_count);
                 elseif(prize_type == 3) then
-                    name = string.format(name, tex.cfg.giftlist[5035]);
+                    name = "what name";
                 end
                 buf:writeString(name);
             end

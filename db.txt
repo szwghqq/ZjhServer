@@ -1,1 +1,222 @@
+#2013-06-25
+drop table if exists `user_quest_info`;
+CREATE TABLE `user_quest_info` (
+  `user_id` int(11) unsigned NOT NULL COMMENT '用户id',
+  `progress` smallint(6) unsigned NOT NULL COMMENT '任务进度',
+  `task_id` smallint(6) unsigned NOT NULL COMMENT '任务id',
+  `poke_list` varchar(255) default '' COMMENT '获得的牌',
+  `task_list` varchar(255) default '' COMMENT '任务',
+  `paixin` smallint(6) unsigned NOT NULL COMMENT '牌型',
+  `sys_time` datetime default NULL COMMENT '更新时间',
+  `award_status` tinyint(3) default '0' COMMENT '领奖状态',
+  PRIMARY KEY  (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+drop table if exists `user_zysz_info` ;
+CREATE TABLE `user_zysz_info` (
+  `userid` INT(11) NOT NULL,
+  `experience` INT(11) NOT NULL,
+  `level` INT(11) NOT NULL,
+  `quest_info` BLOB,
+  `prestige` INT(11) NOT NULL DEFAULT '0',
+  `integral` INT(11) NOT NULL DEFAULT '0',
+  `recent_win` INT(11) NOT NULL DEFAULT '0',
+  `recent_lose` INT(11) NOT NULL DEFAULT '0',
+  `recent_date` DATE DEFAULT NULL,
+  `last_win` INT(11) NOT NULL DEFAULT '0',
+  `last_lose` INT(11) NOT NULL DEFAULT '0',
+  `last_date` DATE DEFAULT NULL,
+  `reg_time` DATETIME DEFAULT '2010-01-01 00:00:00' COMMENT '注册时间',
+  PRIMARY KEY  (`userid`),
+  UNIQUE KEY `userid` (`userid`),
+  KEY `index_integral` (`integral`),
+  KEY `index_prestige` (`prestige`),
+  CONSTRAINT `user_zysz_info_fk` FOREIGN KEY (`userid`) REFERENCES `users` (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `zysz_caichi_info`;
+CREATE TABLE `zysz_caichi_info` (
+  `room_id` INT(11) NOT NULL COMMENT '房间ID\0\0',
+  `sumgold` INT(11) DEFAULT '0' COMMENT '彩池金币数\0R\0s\0',
+  `last_win_user` VARCHAR(50) DEFAULT NULL COMMENT '最后赢的人\0R\0_\0',
+  `last_win_time` INT(11) DEFAULT '0' COMMENT '最后赢的时间，lua时间戳',
+  `last_win_gold` INT(11) DEFAULT '0' COMMENT '最后赢的钱',
+  PRIMARY KEY  (`room_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+DELIMITER $$
+
+USE `yegoal_tex`$$
+
+DROP PROCEDURE IF EXISTS `sp_getuser_zysz_info`$$
+
+CREATE  PROCEDURE sp_getuser_zysz_info(IN nUserId INT)
+BEGIN 
+DECLARE result_level INT;
+  DECLARE result_exp INT;
+  DECLARE newId INT;
+
+  DECLARE mycursor CURSOR FOR
+   SELECT
+      LEVEL,
+      experience
+   FROM
+      user_zysz_info
+   WHERE
+      userid = nUserId;
+   DECLARE CONTINUE HANDLER FOR NOT FOUND
+   INSERT INTO user_zysz_info(userid,experience,LEVEL) VALUES(nUserId,0,0);
+
+   OPEN mycursor;
+   FETCH mycursor INTO result_level,result_exp;
+   CLOSE mycursor;
+
+   IF result_level IS NOT NULL THEN
+      SELECT result_level,result_exp;
+   ELSE
+   	  SELECT 0 AS result_level,0 AS result_exp;
+   END IF;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+USE `yegoal_tex`$$
+
+DROP PROCEDURE IF EXISTS `sp_zysz_insert_log_round`$$
+
+CREATE  PROCEDURE sp_zysz_insert_log_round(
+IN roomId INTEGER, IN peilv INTEGER(11),
+IN startTime DATETIME,
+IN endTime DATETIME,
+IN userId1 INTEGER, IN gold1 INTEGER, IN exp1 INTEGER, IN sid1 INT, IN after_gold1 INT,IN after_sbgold1 INT,
+IN userId2 INTEGER, IN gold2 INTEGER, IN exp2 INTEGER, IN sid2 INT, IN after_gold2 INT,IN after_sbgold2 INT,
+IN userId3 INTEGER, IN gold3 INTEGER, IN exp3 INTEGER, IN sid3 INT, IN after_gold3 INT,IN after_sbgold3 INT,
+IN userId4 INTEGER, IN gold4 INTEGER, IN exp4 INTEGER, IN sid4 INT, IN after_gold4 INT,IN after_sbgold4 INT,
+IN userId5 INTEGER, IN gold5 INTEGER, IN exp5 INTEGER, IN sid5 INT, IN after_gold5 INT,IN after_sbgold5 INT,
+IN userId6 INTEGER, IN gold6 INTEGER, IN exp6 INTEGER, IN sid6 INT, IN after_gold6 INT,IN after_sbgold6 INT)
+BEGIN 
+	DECLARE gameId INT DEFAULT(0);
+	DECLARE isDz INT DEFAULT(0);
+	DECLARE rank_userid INT DEFAULT(0);
+
+	INSERT log_zysz_round(room_id, peilv,user1_id,user2_id,
+				      user3_id, user4_id,user5_id,
+				      user6_id,start_time, end_time)
+	     VALUES(roomId, peilv,  userId1, userId2, userId3,  userId4, userId5, userId6,startTime, endTime);
+	SET gameId = LAST_INSERT_ID();
+
+	IF (userId1 > 0) THEN
+	INSERT log_zysz_round_detail(game_id, user_id, gold, experience)
+		VALUES(gameId, userId1, gold1, exp1);
+	END IF;
+	IF (userId2 > 0) THEN
+	INSERT log_zysz_round_detail(game_id, user_id, gold, experience)
+		VALUES(gameId, userId2, gold2, exp2);
+	END IF;
+	IF (userId3 > 0) THEN
+	INSERT log_zysz_round_detail(game_id, user_id, gold, experience)
+		VALUES(gameId, userId3, gold3, exp3);
+	END IF;
+	IF (userId4 > 0) THEN
+	INSERT log_zysz_round_detail(game_id, user_id, gold, experience)
+		VALUES(gameId, userId4, gold4, exp4);
+	END IF;
+	IF (userId5 > 0) THEN
+	INSERT log_zysz_round_detail(game_id, user_id, gold, experience)
+		VALUES(gameId, userId5, gold5, exp5);
+	END IF;
+	IF (userId6 > 0) THEN
+	INSERT log_zysz_round_detail(game_id, user_id, gold, experience)
+		VALUES(gameId, userId6, gold6, exp6);
+	END IF;
+
+	IF(userId1 >0) THEN
+	    UPDATE ddz_today_rank SET today_gold = today_gold + gold1,
+	    dw_sid = sid1,sys_time = NOW() WHERE user_id = userId1;
+	  IF (ROW_COUNT() =0) THEN
+	    INSERT INTO ddz_today_rank (user_id,today_gold,dw_sid,sys_time)
+		VALUES (userId1,gold1,sid1,NOW());
+	  END IF;
+	END IF;
+
+	IF(userId2 >0) THEN
+	    UPDATE ddz_today_rank SET today_gold = today_gold + gold2,
+	    dw_sid = sid2,sys_time = NOW() WHERE user_id = userId2;
+	  IF (ROW_COUNT() =0) THEN
+	    INSERT INTO ddz_today_rank (user_id,today_gold,dw_sid,sys_time)
+		VALUES (userId2,gold2,sid2,NOW());
+	  END IF;
+	END IF;
+
+	IF(userId3 >0) THEN
+	    UPDATE ddz_today_rank SET today_gold = today_gold + gold3,
+	    dw_sid = sid3,sys_time = NOW() WHERE user_id = userId3;
+	  IF (ROW_COUNT() =0) THEN
+	    INSERT INTO ddz_today_rank (user_id,today_gold,dw_sid,sys_time)
+		VALUES (userId3,gold3,sid3,NOW());
+	  END IF;
+	END IF;
+
+	IF(userId4 >0) THEN
+	    UPDATE ddz_today_rank SET today_gold = today_gold + gold4,
+	    dw_sid = sid4,sys_time = NOW() WHERE user_id = userId4;
+	  IF (ROW_COUNT() =0) THEN
+	    INSERT INTO ddz_today_rank (user_id,today_gold,dw_sid,sys_time)
+		VALUES (userId4,gold4,sid4,NOW());
+	  END IF;
+	END IF;
+
+	IF(userId5 >0) THEN
+	    UPDATE ddz_today_rank SET today_gold = today_gold + gold5,
+	    dw_sid = sid5,sys_time = NOW() WHERE user_id = userId5;
+	  IF (ROW_COUNT() =0) THEN
+	    INSERT INTO ddz_today_rank (user_id,today_gold,dw_sid,sys_time)
+		VALUES (userId5,gold5,sid5,NOW());
+	  END IF;
+	END IF;
+
+	IF(userId6 >0) THEN
+	    UPDATE ddz_today_rank SET today_gold = today_gold + gold6,
+	    dw_sid = sid6,sys_time = NOW() WHERE user_id = userId6;
+	  IF (ROW_COUNT() =0) THEN
+	    INSERT INTO ddz_today_rank (user_id,today_gold,dw_sid,sys_time)
+		VALUES (userId6,gold6,sid6,NOW());
+	  END IF;
+	END IF;
+	COMMIT;
+	IF(userId1 >0) THEN
+		INSERT log_jiesuan_round(user_id, game_id, game_type, after_gold,curr_sbgold) VALUES
+			(userId1, gameId, "zysz", after_gold1,after_sbgold1);
+	END IF;
+	IF(userId2 >0) THEN
+		INSERT log_jiesuan_round(user_id, game_id, game_type, after_gold,curr_sbgold) VALUES
+			(userId2, gameId, "zysz", after_gold2,after_sbgold2);
+	END IF;
+	IF(userId3 >0) THEN
+		INSERT log_jiesuan_round(user_id, game_id, game_type, after_gold,curr_sbgold) VALUES
+			(userId3, gameId, "zysz", after_gold3,after_sbgold3);
+	END IF;
+	IF(userId4 >0) THEN
+		INSERT log_jiesuan_round(user_id, game_id, game_type, after_gold,curr_sbgold) VALUES
+			(userId4, gameId, "zysz", after_gold4,after_sbgold4);
+	END IF;
+	IF(userId5 >0) THEN
+		INSERT log_jiesuan_round(user_id, game_id, game_type, after_gold,curr_sbgold) VALUES
+			(userId5, gameId, "zysz", after_gold5,after_sbgold5);
+	END IF;
+	IF(userId6 >0) THEN
+		INSERT log_jiesuan_round(user_id, game_id, game_type, after_gold,curr_sbgold) VALUES
+			(userId6, gameId, "zysz", after_gold6,after_sbgold6);
+	END IF;
+	COMMIT;
+END$$
+
+DELIMITER ;
+
+#2013-06-25之前忘记标时间了，需要标上
+delete from rooms where id = 19001;
 insert into `rooms` (`id`, `name`, `type`, `description`, `creator`, `state`, `create_time`, `modify_time`, `peilv`, `cansit`, `canchat`, `showname`, `room_settings`, `at_least_gold`, `at_most_gold`, `min_gold`, `add_gold`, `pay_limit`, `specal_pochan_give_money`, `specal_pochan_give_count`, `specal_choushui`, `isguildroom`, `guild_peilv_info`, `is_tournament`, `is_nocheat`, `max_lost_gold`, `limit_jia_bei`, `is_highroom`, `at_least_integral`, `at_least_zhunum`, `is_huanle`) values('19001','炸金花房间','0','','1001','0','2010-11-04 13:03:18','2010-11-04 13:03:21','1','1','1','1','1,1,1,1,0,0,1,0,0,0;0,1','-200000000','200000000','0','0','200000000','0','0','0','0','','0','0','2000000000','200000000','0','-2000000000','0','0');
